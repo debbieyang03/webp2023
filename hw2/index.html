@@ -1,0 +1,103 @@
+<!DOCTYPE html >
+< html  lang =" zh " >
+<頭>
+  <元字符 集=" UTF-8 " >
+  < link  href =" https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css " rel ="樣式表" integrity =" sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6g D "跨源="匿名" >
+</頭>
+<正文>
+  < h1 >景點觀光資訊搜索：< input  type =" text " id =" search " onchange =" search() " >
+  < table  id =" csie " class =" table table-striped table - hover " > <h1>
+    < thead > <!--標題-->
+        < tr >
+        < th >名稱</ th >
+        < th >地點</ th >
+        < th >票價</ th >
+        </tr> _ _
+    </ thead > < tbody > <!--內容-->
+    </ t正文>
+  <表格>
+    <按鈕 類型="按鈕"類=" btn btn-dark " onclick =" lastpage() " > < 上一頁</ button >
+    < span  id = " nowpage " >  </span> _
+    < button  type =" button " class =" btn btn-dark " onclick =" nextpage() " >下一頁> </按鈕>
+</正文>
+  <腳本>
+    //初始設置
+    var  openUrl  =  "https://cloud.culture.tw/frontsite/trans/SearchShowAction.do?method=doFindTypeJ&category=6"
+    var  xhr  =  new  XMLHttpRequest ( ) ;
+    xhr 。打開（'GET' ， openUrl ， 真）;
+    xhr 。發送( ) ;
+    xhr 。onreadystatechange  = 功能（）{
+      如果（這個。readyState == 4 &&這個。狀態== 200 ）{ _      
+        數據集 =  JSON 。解析（這個。responseText ）；_
+        添加新數據（數據集）；
+      }
+    } ;
+    //分頁設定
+    變種 當前頁 =  1 ;
+    var  itemperpage  =  10 ;
+    變種 頁面 =  [ ] ;
+
+    函數 addNewData （數據集， 頁面 =  1 ）{
+        var  myTable  = 文件。getElementById （“csie” ）。getElementsByTagName ( 'tbody' ) [ 0 ] ;
+        //清空之前的資料
+        我的表。innerHTML  =  '' ;
+        //第一頁：0-10，第二頁：10-20
+        var  startIndex  =  ( page  -  1 )  *  itemperpage ;
+        var  endIndex  =  startIndex  +  itemperpage ;
+        //複製開始與結束點（結束點不算）中的內容
+        變種 數據結果 = 數據集。切片（開始索引， 結束索引）；
+        //顯示那頁的內容
+        數據結果。forEach （函數（數據， 索引）{
+            變種 行 = 我的表。插入行（-1 ）；
+            行。插入單元格（0 ）。innerHTML  = 數據[ '標題' ] ;
+            行。插入細胞（1 ）。innerHTML  =  data [ 'showInfo' ] [ 0 ] [ 'location' ] ;
+            行。插入單元格（2 ）。innerHTML  =  data [ 'showInfo' ] [ 0 ] [ 'price' ] ;
+       } ) ;
+       更新頁面（）；
+    } ;
+
+    //目錄前頁數
+    功能 更新頁面（） {
+        var  nowpages  = 文件。getElementById ( "nowpage" ) ;
+        //Math.ceil()是無條件進入位
+        var  totalpage  = 數學。ceil （頁面。長度 /  itemperpage ）;
+        var 當前 =  '' ;
+        如果 （頁面。長度 >  0 ） {
+            current  =  `第${當前頁}頁/共${總頁}頁` ;
+        } 否則 {
+            current  =  `第${當前頁}頁/共${ Math . ceil ( dataset.length / itemperpage ) }頁  ` ; _
+        }
+        現在頁面。innerHTML  = 當前；
+    }
+    
+    //上個頁面
+    功能 最後一頁（） {
+        變種 數據 = 頁面。長度 >  0？頁面：數據集；
+        如果 （當前頁 >  1 ） {
+            當前頁 = 當前頁 -  1 ;
+            添加新數據（數據， 當前頁）；
+        }
+    }
+
+    //下一頁
+    功能 下一頁（） {
+        變種 數據 = 頁面。長度 >  0？頁面：數據集；
+        if  ( currentpage  <  Math.ceil ( data.length / itemperpage ) ) { _ _ _ _   
+            當前頁 = 當前頁 +  1 ;
+            添加新數據（數據， 當前頁）；
+        }
+    }
+
+    //搜索功能
+    函數 搜索( )  {
+        var 關鍵字 = 文件。getElementById （“搜索” ）。價值。toLowerCase ( ) ;
+        //找到與關鍵字相同的字符
+        頁面 = 數據集。過濾器（功能 （數據） {
+            返回 數據。標題。toLowerCase ( ) 。indexOf (關鍵詞)  >  - 1 ;
+        } ) ;
+        當前頁 =  1 ;
+        添加新數據（頁面， 當前頁面）；
+        更新頁面（）；
+    }
+  </腳本>
+</html> _ _
